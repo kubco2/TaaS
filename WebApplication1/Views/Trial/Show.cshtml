@@ -1,0 +1,49 @@
+﻿@model WebApplication1.Models.TakeTrialModel
+@using MvcCheckBoxList.Model
+@{
+    ViewBag.Title = "Trial";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Trial: @Html.DisplayFor(model => model.Trial.Test.Name)<small>@Html.DisplayFor(model => model.Trial.Test.GroupName)</small></h2>
+
+<div class="form-horizontal">
+    <hr />
+    @for (var i = 0; i < Model.Trial.Questions.Count; i++)
+    {
+        <p><strong>@(i + 1). @Model.Trial.Questions[i].Text</strong></p>
+            <blockquote>
+                @foreach (var answer in Model.Trial.Questions[i].Answers)
+                {
+                    <div>
+                        @if (Model.AnswerChecks[answer.Id] == 0)
+                        {
+                            <span class="glyphicon glyphicon-remove" style="visibility:hidden;"></span>
+                        }
+                        else if (Model.AnswerChecks[answer.Id] == -1)
+                        {
+                            <span class="glyphicon glyphicon-remove text-danger"></span>
+                        }
+                        else if (Model.AnswerChecks[answer.Id] == 1)
+                        {
+                            <span class="glyphicon glyphicon-ok text-success"></span>
+                        }
+                        @answer.Text (@answer.Score b.) @answer.Note
+                    </div>
+                }
+            </blockquote>
+            <div>Sum: @Model.QuestionScore[Model.Trial.Questions[i].Id]</div>
+            <hr />
+    }
+    <div>Total: @Model.Trial.Score b.</div><br />
+    <div>
+        @Html.ActionLink("Back", "Show", "Templates", new { id = Model.Trial.Test.Id }, new { })
+    </div>
+</div>
+
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

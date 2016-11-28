@@ -1,0 +1,40 @@
+﻿@model WebApplication1.Models.QuestionCategoryViewEditModel
+
+@{
+    ViewBag.Title = "Delete category";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Really delete category?</h2>
+<p>Questions assigned to this category will be deleted, if you want keep them, move them before deleting category.</p>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Category.Id)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Category.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <p class="form-control-static">@Html.DisplayFor(model => model.Category.Name)</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Yes" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index") | @Html.ActionLink("Show questions", "Index", "Questions", new { categoryId = Model.Category.Id }, new { }) | @Html.ActionLink("Edit", "Edit", new { id = Model.Category.Id })
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,42 @@
+﻿@model WebApplication1.Models.QuestionViewModel
+@{
+    ViewBag.Title = "Questions manager";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Questions</h2>
+<p>
+    @Html.ActionLink("Create New", "New")
+</p>
+@Html.ActionLink("ALL | ", "Index")
+@foreach (var category in Model.Categories)
+{
+    @Html.ActionLink(category.Name + " | ", "Index", new { categoryId = category.Id })
+}
+<table class="table">
+    <tr>
+        <th>
+            Text
+        </th>
+        <th>
+            Category
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model.Questions)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Text)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.QuestionCategoryName)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) | @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+    }
+
+</table>

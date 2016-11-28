@@ -1,0 +1,9 @@
+﻿@model WebApplication1.Models.TakeTrialModel
+@using MvcCheckBoxList.Model
+@{
+    ViewBag.Title = "Trial";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Trial: @Html.DisplayFor(model => model.Trial.Test.Name)<small>@Html.DisplayFor(model => model.Trial.Test.GroupName)</small></h2>
+<p class="bg-warning">Trial must be closed to show answers.</p>

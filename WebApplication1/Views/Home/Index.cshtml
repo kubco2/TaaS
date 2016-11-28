@@ -1,0 +1,78 @@
+﻿@using Microsoft.AspNet.Identity
+@model WebApplication1.Models.HomeModel
+@{
+    ViewBag.Title = "Questions";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h3>Groups</h3>
+@foreach (var item in Model.Groups)
+{
+    <h5>@item.Name</h5>
+    <table class="table">
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Duration
+            </th>
+            <th>
+                Opens at
+            </th>
+            <th>
+                Closes at
+            </th>
+            <th></th>
+        </tr>
+
+        @if(item.Templates.Count < 1)
+        {
+            <tr><td colspan="100">There are not tests to take or show.</td></tr>
+        }
+        @foreach (var template in item.Templates)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => template.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => template.Time) minutes
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => template.DateFrom)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => template.DateTo)
+                </td>
+                <td>
+                    @Html.ActionLink("Show", "Show", "Templates", new { id = template.Id }, new { })
+                </td>
+            </tr>
+        }
+
+    </table>
+}
+
+<h3>Enroll to new group</h3>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AuthCode, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.AuthCode, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.AuthCode, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}

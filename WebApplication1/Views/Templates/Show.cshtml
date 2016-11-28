@@ -1,0 +1,104 @@
+﻿@model WebApplication1.Models.TemplateShowModel
+@{
+    ViewBag.Title = "Test generator";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Test: @Html.DisplayFor(model => model.Template.Name)<small>@Html.DisplayFor(model => model.Template.GroupName)</small></h2>
+<table class="table">
+    <tr><td>Opens at:</td><td>@Model.Template.DateFrom</td></tr>
+    <tr><td>Closes at:</td><td>@Model.Template.DateTo</td></tr>
+    <tr><td>Duration:</td><td>@Model.Template.Time minutes</td></tr>
+    <tr><td>Attempts:</td><td>
+        @if (Model.Template.Attempts > 0)
+        { 
+            @Model.Template.Attempts
+        }
+        else
+        {
+            <span>Infinite</span>
+        }
+        </td></tr>
+</table>
+@if (Model.CanCreateNew)
+{
+    using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.Template.Id)
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Generate new test" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <p>You can not generate new trial.</p>
+}
+<h3>Taken trials: @Model.Trials.Count</h3>
+<table class="table">
+    <tr>
+        <th>
+            Generated at
+        </th>
+        <th>
+            Taken at
+        </th>
+        <th>
+            Closed at
+        </th>
+        <th>
+            User
+        </th>
+        <th>
+            Score
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model.Trials)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Generated)
+            </td>
+            <td>
+                @if (item.Taken == null)
+                {
+                    <span>Not taken</span>
+                }
+                else
+                {
+                    @Html.DisplayFor(modelItem => item.Taken)
+                }
+            </td>
+            <td>
+                @if (item.Closed != null)
+                {
+                    @Html.DisplayFor(modelItem => item.Closed)
+                }
+                else if (item.Taken != null && ((DateTime)item.Taken).AddMinutes(Model.Template.Time + 2) < DateTime.Now)
+                {
+                    <span>Time over</span>
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Score)
+            </td>
+            <td>
+                @Html.ActionLink("Show", "Show", "Trial", new { id = item.Id }, new { })
+            </td>
+        </tr>
+    }
+
+</table>

@@ -1,0 +1,81 @@
+﻿@model WebApplication1.Models.TakeTrialModel
+@using MvcCheckBoxList.Model
+@{
+    ViewBag.Title = "Trial";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Trial: @Html.DisplayFor(model => model.Trial.Test.Name)<small>@Html.DisplayFor(model => model.Trial.Test.GroupName)</small></h2>
+<p class="bg-warning">Do not refresh page.</p>
+<p>Your time: <span id="timeleft"></span></p>
+<script>
+    var duration=@Model.Trial.Test.Time;
+    var timeLeft=duration*60;
+    var submited=false;
+    setInterval(function() {
+        timeLeft--;
+        var minutes=Math.floor(timeLeft/60);
+        minutes=minutes<10 ? "0" + minutes : minutes;
+        var seconds=timeLeft%60;
+        seconds=seconds<10 ? "0" + seconds : seconds;
+        if(timeLeft >= 0) {
+            document.getElementById("timeleft").innerHTML=minutes + ":" + seconds;
+        }
+        else if(!submited) {
+            submited=true;
+            document.getElementById("trial").parentElement.submit();
+        }
+            
+    }, 1000)
+</script>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.Trial.Id)
+
+    <div id="trial" class="form-horizontal">
+        <hr />
+        @for (var i = 0; i < Model.Trial.Questions.Count; i++)
+        {
+            <p><strong>@(i+1). @Model.Trial.Questions[i].Text</strong></p>
+            <blockquote>
+                @if (Model.Trial.Questions[i].Multiple)
+                {
+                    foreach (var answer in Model.Trial.Questions[i].Answers)
+                    {
+                        <div class="checkbox">
+                            <label>
+                                @Html.CheckBox("multipleChoice_" + answer.QuestionId + "_" + answer.Id, answer.Id)
+                                @answer.Text
+                            </label>
+                        </div>
+                    }
+                }
+                else
+                {
+                    foreach (var answer in Model.Trial.Questions[i].Answers)
+                    {
+                        <div class="radio">
+                            <label>
+                                @Html.RadioButton("singleChoice_" + answer.QuestionId, answer.Id)
+                                @answer.Text
+                            </label>
+                        </div>
+                        
+                    }
+
+                }
+            </blockquote>
+            <hr />
+        }
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
